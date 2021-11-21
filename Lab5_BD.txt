@@ -1,0 +1,82 @@
+///////////////////////////////////////////////////////////////////////////////
+
+1.
+
+CREATE DATABASE Morgunov_Kolotvinova;
+
+/
+
+2.
+
+create table MK_Storage{
+id_product int not null auto_increment,
+name_product varchar(100),
+price float,
+PRIMARY KEY (id_product)
+}
+
+/
+
+3.
+
+create table MK_TTN{
+N_bill int,
+DataP date,
+Supplier varchar(100),
+id_product int,kol_vo int,
+FOREIGN KEY (id_product) REFERENCES MK_Storage(id_product);
+}
+
+/
+
+4.
+
+CREATE USER 'Morgunov_User1'@'%' IDENTIFIED BY 'password';
+CREATE USER 'Kolotvinova_User2'@'%' IDENTIFIED BY 'password';
+
+/
+
+5.
+
+set password Morgunov_User1=qqqw1;
+set password Kolotvinova_User2=qqqw2;
+
+/
+
+6.
+
+Grant select ON MK_TTN.* to Morgunov_User1;
+Grant update,select ON MK_TNN.*,MK_Storage.* to Kolotvinova_User2;
+
+/
+
+7.	Morgunov_User1*
+
+set password=12234;
+
+select * from MK_TNN;
+
+/
+
+8.	Kolotvinova_User2*
+
+UPDATE MK_Storage
+SET    price = 77777
+WHERE  id_product = (SELECT Max(id_product) 
+               FROM   MK_TNN)
+UPDATE MK_TNN
+SET    DataP = 12.12.2012
+WHERE  N_bill = (SELECT Max(N_bill) 
+               FROM   MK_TNN)
+
+/
+
+9	root*
+
+Grant update ON MK_TNN.* and MK_Storage.* to Morgunov_User1;
+Grant insert ON MK_TNN.* and MK_Storage.* to Morgunov_User1;
+Grant select ON MK_Storage.* to Morgunov_User1;
+REVOKE update ON MK_Storage.* FROM Kolotvinova_User2;
+Grant delete ON MK_TNN.* to Kolotvinova_User2;
+
+////////////////////////////////////////////////////////////////////////////////
